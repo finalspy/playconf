@@ -1,0 +1,5 @@
+# Default playconf messages
+# You can specialize this file for each language.
+# For exemple, for french create a messages.fr file
+
+#playconf.name=playconf
