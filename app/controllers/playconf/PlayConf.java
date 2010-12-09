@@ -35,7 +35,13 @@ public class PlayConf extends Controller {
 
 
     public static void save() {
-        System.out.println("SAVE...");
+        System.out.println("~ Saving configuration ...");
+        //
+        System.out.println("~ Configuration Saved");
+        Play.stop();
+        System.out.println("~ Application Stopped");
+        Play.start();
+        System.out.println("~ Application Restarted");
         index();
     }
 //        /**
