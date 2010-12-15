@@ -15,7 +15,7 @@
     #{form @save()}
     <ul>
         #{list items:props, as:'prop' }
-        <li>${prop.key} = <input type="text" value="${prop.value}"/></li>
+        <li>${prop.key} = <input name="${prop.key}" type="text" value="${prop.value}"/></li>
         #{/list}
     </ul>
 
