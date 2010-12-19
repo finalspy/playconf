@@ -20,21 +20,19 @@ public class PlayConf extends Controller {
     private static Map<String, Integer> keylinemap = new HashMap<String, Integer>();
     private static Map<String, String> keyvaluemap = new HashMap<String, String>();
 
+    public static final String APPLICATION_CONF = Play.applicationPath + separator + "conf"
+                    + separator + "application.conf";
+    public static final String APPLICATION_CONF_BAK = APPLICATION_CONF + ".bak";
+
     public static void index() {
 
         // Check if previous report exist
         if (!confReadableGlobal) {
-
-            String coverageTestPath = Play.applicationPath + separator + "conf"
-                    + separator + "application.conf";
-
-            File f = new File(coverageTestPath);
-
-            if (f.exists()) {
+            File f = new File(APPLICATION_CONF);
+             if (f.exists()) {
                 confReadableGlobal = true;
             }
         }
-
         if (confReadableGlobal) {
             readPlayperties();
             Set props = keyvaluemap.entrySet(); //configuration.entrySet();
@@ -50,12 +48,12 @@ public class PlayConf extends Controller {
 
         System.out.println("~ Saving configuration ...");
         // backup old file
-        File old = new File(Play.applicationPath + separator + "conf"
-                + separator + "application.conf.bak");
+        File old = new File(APPLICATION_CONF_BAK);
         old.delete();
-        File f = new File(Play.applicationPath + separator + "conf"
-                + separator + "application.conf");
-        f.renameTo(old);
+
+        File cur = new File(APPLICATION_CONF);
+        cur.renameTo(old);
+
         // pour chaque key si value changée alors set
         for (Map.Entry<String, String[]> e : params.all().entrySet()) {
             if (!e.getValue()[0].equals(keyvaluemap.get(e.getKey()))) {
@@ -76,14 +74,15 @@ public class PlayConf extends Controller {
         try {
             // Open the file that is the first
             // command line parameter
-            FileInputStream fstream = new FileInputStream(Play.applicationPath + separator + "conf"
-                    + separator + "application.conf");
+            FileInputStream fstream = new FileInputStream(APPLICATION_CONF);
             // Get the object of DataInputStream
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String strLine;
             String key;
             String value;
+            fileperties.clear();
+            boolean isTitle = true;
             //Read File Line By Line
             while ((strLine = br.readLine()) != null) {
                 if (strLine.length() == 0) {
@@ -117,21 +116,23 @@ public class PlayConf extends Controller {
     static void writePlayperties() {
         try {
             // Open an output stream
-            File f = new File(Play.applicationPath + separator + "conf"
-                    + separator + "application.conf");
-            System.out.println("efface=" + f.delete());
-            FileOutputStream fout = new FileOutputStream(Play.applicationPath + separator + "conf"
-                    + separator + "application.conf");
+            File f = new File(APPLICATION_CONF);
+
+            FileOutputStream fout = new FileOutputStream(f);
+            fout.flush();
 
             // Print a line of text
             PrintStream p = new PrintStream(fout);
+            p.flush();
 
             for (Object o : fileperties) {
                 p.println(o);
             }
 
+            p.close();
             // Close our output stream
             fout.close();
+            
         } catch (Exception e) {//Catch exception if any
             System.err.println("Error: " + e.getMessage());
         }
