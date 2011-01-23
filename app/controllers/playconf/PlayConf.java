@@ -15,31 +15,64 @@ public class PlayConf extends Controller {
      * The framework ID
      */
     public static String id;
-
     private static List<Object> fileperties = new ArrayList<Object>();
     private static Map<String, Integer> keylinemap = new HashMap<String, Integer>();
     private static Map<String, String> keyvaluemap = new HashMap<String, String>();
 
-    public static final String APPLICATION_CONF = Play.applicationPath + separator + "conf"
-                    + separator + "application.conf";
-    public static final String APPLICATION_CONF_BAK = APPLICATION_CONF + ".bak";
+    public static final String APP_PATH = Play.applicationPath + separator + "conf" + separator;
+    public static final String APP_CONF = APP_PATH + "application.conf";
+    public static final String APP_MESSAGES = APP_PATH + "messages";
+    public static final String APP_ROUTES = APP_PATH + "routes";
+    public static final String APP_CONF_BAK = APP_CONF + ".bak";
 
     public static void index() {
 
         // Check if previous report exist
         if (!confReadableGlobal) {
-            File f = new File(APPLICATION_CONF);
-             if (f.exists()) {
+            File f = new File(APP_CONF);
+            if (f.exists()) {
                 confReadableGlobal = true;
             }
         }
         if (confReadableGlobal) {
-            readPlayperties();
+            readPlayperties(APP_CONF);
             Set props = keyvaluemap.entrySet(); //configuration.entrySet();
             render(props);
         }
     }
 
+
+    public static void messages() {
+
+        // Check if previous report exist
+        if (!confReadableGlobal) {
+            File f = new File(APP_MESSAGES);
+            if (f.exists()) {
+                confReadableGlobal = true;
+            }
+        }
+        if (confReadableGlobal) {
+            readPlayperties(APP_MESSAGES);
+            Set props = keyvaluemap.entrySet(); //configuration.entrySet();
+            render(props);
+        }
+    }
+
+    public static void routes() {
+
+        // Check if previous report exist
+        if (!confReadableGlobal) {
+            File f = new File(APP_ROUTES);
+            if (f.exists()) {
+                confReadableGlobal = true;
+            }
+        }
+        if (confReadableGlobal) {
+            readPlayperties(APP_ROUTES);
+            Set props = keyvaluemap.entrySet(); //configuration.entrySet();
+            render(props);
+        }
+    }
 
     public static void save() {
 
@@ -48,19 +81,15 @@ public class PlayConf extends Controller {
 
         System.out.println("~ Saving configuration ...");
         // backup old file
-        File old = new File(APPLICATION_CONF_BAK);
+        File old = new File(APP_CONF_BAK);
         old.delete();
 
-        File cur = new File(APPLICATION_CONF);
+        controlPlayperties();
+
+        File cur = new File(APP_CONF);
         cur.renameTo(old);
 
-        // pour chaque key si value changée alors set
-        for (Map.Entry<String, String[]> e : params.all().entrySet()) {
-            if (!e.getValue()[0].equals(keyvaluemap.get(e.getKey()))) {
-                keyvaluemap.put(e.getKey(), e.getValue()[0]);
-                fileperties.set(keylinemap.get(e.getKey()), e.getKey() + "=" + e.getValue()[0]);
-            }
-        }
+
         writePlayperties();
         System.out.println("~ Configuration Saved");
 
@@ -69,12 +98,21 @@ public class PlayConf extends Controller {
         index();
     }
 
+    private static void controlPlayperties() {
+        // pour chaque key si value changée alors set
+        for (Map.Entry<String, String[]> e : params.all().entrySet()) {
+            if (!e.getValue()[0].equals(keyvaluemap.get(e.getKey()))) {
+                keyvaluemap.put(e.getKey(), e.getValue()[0]);
+                fileperties.set(keylinemap.get(e.getKey()), e.getKey() + "=" + e.getValue()[0]);
+            }
+        }
+    }
 
-    static void readPlayperties() {
+    static void readPlayperties(String path) {
         try {
             // Open the file that is the first
             // command line parameter
-            FileInputStream fstream = new FileInputStream(APPLICATION_CONF);
+            FileInputStream fstream = new FileInputStream(path);
             // Get the object of DataInputStream
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -116,7 +154,7 @@ public class PlayConf extends Controller {
     static void writePlayperties() {
         try {
             // Open an output stream
-            File f = new File(APPLICATION_CONF);
+            File f = new File(APP_CONF);
 
             FileOutputStream fout = new FileOutputStream(f);
             fout.flush();
@@ -132,7 +170,7 @@ public class PlayConf extends Controller {
             p.close();
             // Close our output stream
             fout.close();
-            
+
         } catch (Exception e) {//Catch exception if any
             System.err.println("Error: " + e.getMessage());
         }
