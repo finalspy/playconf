@@ -1,10 +1,14 @@
 package controllers.playconf;
 
+import com.konkest.util.Line;
 import play.Play;
 import play.mvc.Controller;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class PlayConf extends Controller {
@@ -18,6 +22,7 @@ public class PlayConf extends Controller {
     private static List<Object> fileperties = new ArrayList<Object>();
     private static Map<String, Integer> keylinemap = new HashMap<String, Integer>();
     private static Map<String, String> keyvaluemap = new HashMap<String, String>();
+    private static List<Line> file = new ArrayList<Line>();
 
     public static final String APP_PATH = Play.applicationPath + separator + "conf" + separator;
     public static final String APP_CONF = APP_PATH + "application.conf";
@@ -26,51 +31,25 @@ public class PlayConf extends Controller {
     public static final String APP_CONF_BAK = APP_CONF + ".bak";
 
     public static void index() {
-
-        // Check if previous report exist
-        if (!confReadableGlobal) {
-            File f = new File(APP_CONF);
-            if (f.exists()) {
-                confReadableGlobal = true;
-            }
-        }
-        if (confReadableGlobal) {
-            readPlayperties(APP_CONF);
-            Set props = keyvaluemap.entrySet(); //configuration.entrySet();
-            render(props);
-        }
+        preparePage(APP_CONF);
     }
 
-
     public static void messages() {
-
-        // Check if previous report exist
-        if (!confReadableGlobal) {
-            File f = new File(APP_MESSAGES);
-            if (f.exists()) {
-                confReadableGlobal = true;
-            }
-        }
-        if (confReadableGlobal) {
-            readPlayperties(APP_MESSAGES);
-            Set props = keyvaluemap.entrySet(); //configuration.entrySet();
-            render(props);
-        }
+        preparePage(APP_MESSAGES);
     }
 
     public static void routes() {
+        preparePage(APP_ROUTES);
+    }
 
+    private static void preparePage(String path) {
         // Check if previous report exist
-        if (!confReadableGlobal) {
-            File f = new File(APP_ROUTES);
-            if (f.exists()) {
-                confReadableGlobal = true;
-            }
-        }
-        if (confReadableGlobal) {
-            readPlayperties(APP_ROUTES);
-            Set props = keyvaluemap.entrySet(); //configuration.entrySet();
-            render(props);
+        if (confReadableGlobal |= new File(path).exists()) {
+            readPlayperties(path);
+            //Set props = keyvaluemap.entrySet(); //configuration.entrySet();
+            //render(props);
+            List liste = file;
+            render(liste);
         }
     }
 
@@ -88,7 +67,6 @@ public class PlayConf extends Controller {
 
         File cur = new File(APP_CONF);
         cur.renameTo(old);
-
 
         writePlayperties();
         System.out.println("~ Configuration Saved");
@@ -119,33 +97,18 @@ public class PlayConf extends Controller {
             String strLine;
             String key;
             String value;
-            fileperties.clear();
+            Line tmpLine;
+            file.clear();
             boolean isTitle = true;
             //Read File Line By Line
             while ((strLine = br.readLine()) != null) {
-                if (strLine.length() == 0) {
-                    // vide
-                    fileperties.add(strLine);
-                } else if (strLine.startsWith("#")) {
-                    // comment
-                    fileperties.add(strLine);
-                } else if (strLine.contains("=")) { // TODO || strLine.contains(":")){
-                    // key/value line
-                    fileperties.add(strLine);
-                    key = strLine.substring(0, strLine.indexOf("="));
-                    value = strLine.substring(strLine.indexOf("=") + 1, strLine.length());
-                    // key/line Map
-                    keylinemap.put(key, fileperties.size() - 1);
-                    // key/value Map
-                    keyvaluemap.put(key, value);
-                } else {
-                    // unknown or unhandled
-                    fileperties.add(strLine);
-                }
+                tmpLine = new Line(strLine);
+                if (file.size() > 0)
+                    file.get(file.size() - 1).setTitle(strLine.contains("~~~~~"));
+                file.add(tmpLine);
             }
             //Close the input stream
             in.close();
-
         } catch (Exception e) {//Catch exception if any
             System.err.println("Error: " + e.getMessage());
         }

@@ -32,12 +32,22 @@
                 <h1>Configuration File</h1>
 
                 #{form @save()}
-                <ul>
-                    #{list items:props, as:'prop' }
-                    <li>${prop.key} = <input name="${prop.key}" type="text" value="${prop.value}"/></li>
-                    #{/list}
-                </ul>
 
+                #{list items:liste, as:'line' }
+                #{if line.length == 0}
+                <br/>
+                #{/if}
+                #{elseif line.title}
+                <h2>${line.content}</h2>
+                #{/elseif}
+                #{elseif line.comment}
+                <span class="comment">${line.content}</span><br/>
+                #{/elseif}
+                #{elseif line.key != null && line.value != null}
+                <span class="key">${line.key}</span> => <input name="${line.key}" type="text"
+                                                               value="${line.value}"/><br/>
+                #{/elseif}
+                #{/list}
 
                 <input type="submit">
                 #{/form}
