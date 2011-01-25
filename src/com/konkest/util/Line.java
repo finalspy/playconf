@@ -10,6 +10,7 @@ package com.konkest.util;
 public class Line {
     private boolean comment;
     private boolean title;
+    private boolean separator;
     private String content;
     private String key;
     private String value;
@@ -31,6 +32,10 @@ public class Line {
         return this.title;
     }
 
+    public boolean isSeparator() {
+        return this.separator;
+    }
+
     public String getKey() {
         return this.key;
     }
@@ -46,10 +51,11 @@ public class Line {
 
     public Line(String line) {
         this.comment = line.startsWith("#");
+        this.separator = line.contains("~~~~~");
         this.content = (this.comment) ? line.substring(1) : line;
         this.length = this.content.length();
         if (line.contains("=")) {
-            this.key = line.substring(0, line.indexOf("="));
+            this.key = (this.comment)?line.substring(1, line.indexOf("=")):line.substring(0, line.indexOf("="));
             this.value = line.substring(line.indexOf("=") + 1, line.length());
         }
     }
