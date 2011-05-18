@@ -8,6 +8,8 @@
           href="@{'/public/playmanual/wiki.css'}"/>
     <link rel="shortcut icon" type="image/png"
           href="@{'/public/images/favicon.png'}"/>
+    <script src="@{'/public/javascripts/jquery-1.4.2.min.js'}" type="text/javascript" charset="utf-8"></script>
+    <script src="@{'/public/javascripts/playconf.js'}" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
 <div class="wrapper">
@@ -34,19 +36,27 @@
                 #{form @save()}
 
                 #{list items:liste, as:'line' }
-                #{if line.length == 0}
-                <br/>
-                #{/if}
-                #{elseif line.title}
-                <h2>${line.content}</h2>
-                #{/elseif}
-                #{elseif line.comment && !line.separator}
-                #{if line.key != null}<input type="checkbox" id="${line.key}" />#{/if}<span class="comment">${line.content}</span><br/>
-                #{/elseif}
-                #{elseif line.key != null && line.value != null}
-                <input type="checkbox" id="${line.key}" checked="checked"/><span class="key">${line.key}</span> => <input name="${line.key}" type="text"
-                                                               value="${line.value}"/><br/>
-                #{/elseif}
+                
+                	#{if line.length == 0}
+                		<br/>
+                	#{/if}
+                	#{elseif line.title}
+                		<h2>${line.content} &nbsp; <span class="collapse">[+]</span></h2>
+                		<div class="block">
+                	#{/elseif}
+                	#{elseif line.comment && !line.separator}
+                		#{if line.key != null}
+                			<input type="checkbox" id="${line.key}" />
+                		#{/if}
+                		<span class="comment">${line.content}</span><br/>
+                	#{/elseif}
+                	#{elseif line.key != null && line.value != null}
+                		<input type="checkbox" id="${line.key}" checked="checked"/>
+                		<span class="key">${line.key}</span> => <input name="${line.key}" type="text" value="${line.value}"/><br/>
+                	#{/elseif}
+                	#{if line.blockEnd}
+                		</div>
+                	#{/if}
                 #{/list}
 
                 <input type="submit">
