@@ -9,7 +9,7 @@ public class Line {
     private boolean       title;
     private boolean       blockEnd;
     private final boolean separator;
-    private final String  content;
+    private String        content;
     private String        key;
     private String        value;
     private final int     length;
@@ -77,6 +77,10 @@ public class Line {
         this.blockEnd = blockEnd;
     }
 
+    public void setContent(final String content) {
+        this.content = content;
+    }
+
     /**
      * @param id
      *            the id to set
@@ -91,6 +95,6 @@ public class Line {
 
     @Override
     public String toString() {
-        return "(" + this.content + ")\n";
+        return ((this.comment) ? "#" : "") + this.content;
     }
 }

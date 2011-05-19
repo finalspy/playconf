@@ -25,9 +25,10 @@ public class PlayConf extends Controller {
      * The framework ID
      */
     public static String                id;
-    private static List<Object>         fileperties        = new ArrayList<Object>();
-    private static Map<String, Integer> keylinemap         = new HashMap<String, Integer>();
+    // private static List<Object> fileperties = new ArrayList<Object>();
+    private static Map<String, Integer> keynummap          = new HashMap<String, Integer>();
     private static Map<String, String>  keyvaluemap        = new HashMap<String, String>();
+    private static Map<Integer, Line>   numlinemap         = new HashMap<Integer, Line>();
     private static List<Line>           file               = new ArrayList<Line>();
 
     public static final String          APP_PATH           = Play.applicationPath + separator + "conf" + separator;
@@ -37,18 +38,22 @@ public class PlayConf extends Controller {
     public static final String          APP_CONF_BAK       = APP_CONF + ".bak";
 
     private static void controlPlayperties() {
+        Line tmpLine = null;
         // pour chaque key si value changée alors set
         for (final Map.Entry<String, String[]> e : params.all().entrySet()) {
-            if ((e.getValue() != null) && (e.getValue()[0] != null) && (keyvaluemap != null)
-                    && !e.getValue()[0].equals(keyvaluemap.get(e.getKey()))) {
+            if ((e.getValue() != null) && (e.getValue()[0] != null) && (numlinemap != null)
+                    && (keynummap.get(e.getKey()) != null) && (numlinemap.get(keynummap.get(e.getKey())) != null)
+                    && !e.getValue()[0].equals(numlinemap.get(keynummap.get(e.getKey())).getValue())) {
                 keyvaluemap.put(e.getKey(), e.getValue()[0]);
-                // FIXME NPE here keylinemap is empty
-                if (null != keylinemap.get(e.getKey())) {
-                    fileperties.set(keylinemap.get(e.getKey()), e.getKey() + "=" + e.getValue()[0]);
-                }
-                else {
-                    fileperties.add(e.getKey() + "=" + e.getValue()[0]);
-                }
+
+                tmpLine = numlinemap.get(keynummap.get(e.getKey()));
+                tmpLine.setContent(e.getKey() + "=" + e.getValue()[0]);
+                file.set(keynummap.get(e.getKey()), tmpLine);
+                // fileperties.set(numlinemap.get(e.getKey()), e.getKey() + "=" + e.getValue()[0]);
+
+                // else {
+                // fileperties.add(e.getKey() + "=" + e.getValue()[0]);
+                // }
             }
         }
     }
@@ -83,8 +88,10 @@ public class PlayConf extends Controller {
             String strLine;
             Line tmpLine;
             int id = 0;
+            int num = 0;
             file.clear();
-            keylinemap.clear();
+            // keynummap.clear();
+            numlinemap.clear();
             // Read File Line By Line
             while ((strLine = br.readLine()) != null) {
                 tmpLine = new Line(strLine);
@@ -97,7 +104,9 @@ public class PlayConf extends Controller {
                 }
                 file.add(tmpLine);
                 // TODO recup key and set line
-                // keylinemap.put(key, value);
+                numlinemap.put(num, tmpLine);
+                keynummap.put(tmpLine.getKey(), num++);
+
             }
             // Close the input stream
             in.close();
@@ -121,7 +130,7 @@ public class PlayConf extends Controller {
         final File old = new File(APP_CONF_BAK);
         old.delete();
 
-        fileperties = new ArrayList<Object>();
+        // newfile = new ArrayList<Object>();
         controlPlayperties();
 
         final File cur = new File(APP_CONF);
@@ -147,7 +156,7 @@ public class PlayConf extends Controller {
             final PrintStream p = new PrintStream(fout);
             p.flush();
 
-            for (final Object o : fileperties) {
+            for (final Object o : file) {
                 p.println(o);
             }
 
