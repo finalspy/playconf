@@ -1,0 +1,43 @@
+body{
+	font-size: 10px;
+}
+
+.block{
+	border: 1px solid #AAA;
+	width: 310px;
+	display: inline;
+	float:left;
+	margin-left: 8px;
+	margin-bottom: 4px;
+}
+	
+.blockTitle{
+	font-size: 11px;
+	font-weight: bold;
+	font-family: 'Lucida Grande',Helvetica,Arial,sans-serif;
+}
+	
+.blockContent{
+	font-size: 10px;
+}
+	
+.comment{
+	
+}
+	
+.propertyKey{
+	
+}
+	
+.propertyValue{
+	
+}
+
+input, select, textarea {
+     font-family: 'Lucida Grande',Helvetica,Arial,sans-serif;
+     font-size:  100%;
+}
+
+#save {
+	float: right;	
+}

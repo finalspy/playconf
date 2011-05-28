@@ -2,6 +2,7 @@
 <head>
     <title>Play! - Application Configurator</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/playconf.css'}">
     <link rel="stylesheet" type="text/css" media="screen"
           href="@{'/public/playmanual/manual.css'}"/>
     <link rel="stylesheet" type="text/css" media="screen"
@@ -41,8 +42,9 @@
                 		<br/>
                 	#{/if}
                 	#{elseif line.title}
-                		<h2>${line.content} &nbsp; <span class="collapse">[+]</span></h2>
                 		<div class="block">
+                		<div class="blockTitle"><span class="collapse">[+]</span>&nbsp;${line.content}</div>
+                		<div class="blockContent">
                 	#{/elseif}
                 	#{elseif line.comment && !line.separator}
                 		#{if line.key != null}
@@ -52,14 +54,14 @@
                 	#{/elseif}
                 	#{elseif line.key != null && line.value != null}
                 		<input type="checkbox" id="${line.key}" checked="checked"/>
-                		<span class="key">${line.key}</span> => <input name="${line.key}" type="text" value="${line.value}"/><br/>
+                		<span class="key">${line.key}</span> =&gt; <input name="${line.key}" type="text" value="${line.value}"/><br/>
                 	#{/elseif}
                 	#{if line.blockEnd}
-                		</div>
+                		</div></div>
                 	#{/if}
                 #{/list}
-
-                <input type="submit">
+</div></div><br/>
+                <input id="save" type="submit">
                 #{/form}
 
             </div>
