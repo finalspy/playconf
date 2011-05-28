@@ -1,3 +1,9 @@
 *.pyc
 /lib
-/playconf.iml
+*.iml
+/bin
+*.class
+/.settings
+/.project
+/.checkstyle
+/.classpath
