@@ -1,8 +1,7 @@
 package com.konkest.util;
 
 /**
- * Created by IntelliJ IDEA. User: finalspy Date: 24/01/11 Time: 22:49 To change this template use File |
- * Settings | File Templates.
+ * @author finalspy
  */
 public class Line {
     private final boolean comment;
@@ -21,7 +20,8 @@ public class Line {
         this.content = (this.comment) ? line.substring(1) : line;
         this.length = this.content.length();
         if (line.contains("=")) {
-            this.key = (this.comment) ? line.substring(1, line.indexOf("=")) : line.substring(0, line.indexOf("="));
+            this.key = (this.comment) ? line.substring(1, line.indexOf("="))
+                    : line.substring(0, line.indexOf("="));
             this.value = line.substring(line.indexOf("=") + 1, line.length());
         }
     }

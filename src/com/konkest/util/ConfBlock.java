@@ -1,52 +1,51 @@
 package com.konkest.util;
 
-import org.apache.commons.collections.KeyValue;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.KeyValue;
+
 /**
- * Created by IntelliJ IDEA.
- * User: finalspy
- * Date: 22/01/11
- * Time: 00:36
- * To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: finalspy Date: 22/01/11 Time: 00:36 To change
+ * this template use File | Settings | File Templates.
  */
 public class ConfBlock {
-    private String title = "";
-    private List<String> comments = new ArrayList<String>();
+    private String         title      = "";
+    private List<String>   comments   = new ArrayList<String>();
     private List<KeyValue> properties = new ArrayList<KeyValue>();
 
-    public ConfBlock(){
+    public ConfBlock() {
 
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public List<String> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<String> comments) {
-        this.comments = comments;
+        return this.comments;
     }
 
     public List<KeyValue> getProperties() {
-        return properties;
+        return this.properties;
     }
 
-    public void setProperties(List<KeyValue> properties) {
+    public String getTitle() {
+        return this.title;
+    }
+
+    public void setComments(final List<String> comments) {
+        this.comments = comments;
+    }
+
+    public void setProperties(final List<KeyValue> properties) {
         this.properties = properties;
     }
-    public String toString(){
-        StringBuffer buff = new StringBuffer();
-        buff.append("# " + title);
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer buff = new StringBuffer();
+        buff.append("# " + this.title);
         return buff.toString();
     }
 }
